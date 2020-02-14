@@ -2,12 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Help</title>
+    <title>发布</title>
     <script src="/webjars/jquery/1.11.1/jquery.min.js" type="application/javascript"></script>
     <script src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js" type="application/javascript"></script>
     <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.css">
-
-
+    <style rel="stylesheet">
+        .centered{
+            width: 1200px;
+            margin:30px auto;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -49,13 +53,8 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/login" th:if="${session.user==null}">登录</a></li>
                 <li><a th:if="${session.user==null}" href="https://github.com/login/oauth/authorize?client_id=c64b4a90108f6a0b3e8e&redirect_uri=http://localhost/callback&scope=user&state=1">GitHub登录</a></li>
-                <li><a href="/publish" th:if="${session.user!=null}">发布问题</a></li>
                 <li class="dropdown" th:if="${session.user!=null}">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-<!--                        <span><img src="" th:src="${session.user.avatar_url}" alt="" class="img-circle" style="width: 32px;"></span>-->
-                        <span th:text="${session.user.username}"></span>
-                        <span class="caret"></span>
-                    </a>
+                    <a href="#" th:text="${session.user.username}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">我<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="#">消息中心</a></li>
                         <li><a href="#">个人资料</a></li>
@@ -66,35 +65,36 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
-    <div class="container-fluid">
+    <div class="container-fluid centered">
         <div class="row">
-            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-                <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span>发现</h2><hr/>
-                <div class="media" th:each="question :${questions}">
-                    <div class="media-left">
-                        <a href="#">
-                            <img th:src="${question.basicUser.avatar_url}" style="width: 64px" class="media-object img-circle" src="http://img3.imgtn.bdimg.com/it/u=1744365556,1648558001&fm=26&gp=0.jpg" alt="...">
-                        </a>
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" style="">
+                <h2><span class="glyphicon glyphicon-plus" aria-hidden="true">发起问题</span></h2>
+                <hr/>
+                <form action="/publish" method="post">
+                    <div class="form-group">
+<!--                        <label for="title" style="display: none">标题</label>-->
+                        <input type="text" class="form-control" id="title" placeholder="标题" name="title">
                     </div>
-                    <div class="media-body">
-                        <h4 class="media-heading" th:text="${question.title}">Media heading</h4>
-                        <p th:text="${question.detail}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur, mollitia!</p>
-                        <p>
-                            <span th:text="${question.commentCount}+'回复'"></span>
-                            <span th:text="${question.readCount}+'阅读'"></span>
-                            <span th:text="${question.praiseCount}+'点赞'"></span>
-                            <span th:text="'发布 '+${question.getCreatedAt()}"></span>
-                            <span th:text="'修改 '+${question.getModifiedAt()}"></span>
-                        </p>
+                    <div class="form-group">
+<!--                        <label for="detail" style="display: none">详细内容</label>-->
+                        <textarea style="resize: none" class="form-control" rows="6"  placeholder="详细内容..." id="detail" name="detail" ></textarea>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="tags" name="tags" placeholder="请输入标签，以 ，分隔">
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
             </div>
-            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-                <h3>热门话题</h3>
+            <div class="col-lg-3  col-md-12 col-sm-12 col-xs-12">
+                <h3>问题发起指南</h3>
+                <h4>标题: <span>请用简洁的语言描述您发布的问题，尽量不超过25字</span></h4>
+                <h4>详细内容: <span>请详细描述您的问题以便他人能更好地给予您帮助</span></h4>
+                <h4>标签: <span>请选择一个或多个合适的标签</span></h4>
+                <h4>关于积分: <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, natus!</span></h4>
             </div>
         </div>
     </div>
 
 </body>
-<!--<script th:src="@{/layui-v2.5.6/layui/layui.js}"></script>-->
 </html>
