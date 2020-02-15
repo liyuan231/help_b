@@ -2,6 +2,7 @@ package com.example.help_b.config;
 
 import com.example.help_b.component.interceptor.PersistenceLoginInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -9,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.annotation.Resource;
 
 @Configuration
+//@EnableWebMvc //开启此注解就不会自动装配WebMvcAutoConfiguration
 public class WebMvcConfig implements WebMvcConfigurer {
     @Resource(name = "persistenceLoginInterceptor")
     PersistenceLoginInterceptor persistenceLoginInterceptor;

@@ -64,4 +64,13 @@ public class QuestionServiceImpl implements QuestionService {
         }
         return questionDtos;
     }
+
+    @Override
+    public QuestionDto getQuestionById(Integer questionId) {
+        Question question = questionDao.getQuestionById(questionId);
+        QuestionDto questionDto = new QuestionDto();
+        BeanUtils.copyProperties(question,questionDto);
+        questionDto.setBasicUser(userService.selectGitHubUserById((int) questionDto.getAuthor()));
+        return questionDto;
+    }
 }

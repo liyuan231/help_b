@@ -15,4 +15,6 @@ public interface QuestionService {
     Integer sum(String userId);
 
     List<QuestionDto> getPersonalQuestions(int page, Integer size, String id);
+
+    QuestionDto getQuestionById(Integer questionId);
 }

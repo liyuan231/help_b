@@ -1,6 +1,7 @@
 package com.example.help_b.dao;
 
 import com.example.help_b.model.Question;
+import com.example.help_b.model.QuestionDto;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,7 @@ public interface QuestionDao {
 
     @Select("select * from question where author=#{id} limit #{size} offset #{offset}")
     List<Question> getPersonalQuestions(int offset, Integer size, String id);
+
+    @Select("select * from question where id=#{id}")
+    Question getQuestionById(@Param("id") Integer questionId);
 }

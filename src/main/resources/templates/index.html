@@ -22,7 +22,9 @@
                         </a>
                     </div>
                     <div class="media-body">
-                        <h4 class="media-heading" th:text="${question.title}">Media heading</h4>
+                        <h4 class="media-heading">
+                            <a href="" th:href="@{'/question/'+${question.id}}"  th:text="${question.title}"></a>
+                        </h4>
                         <p th:text="${question.detail}">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur, mollitia!</p>
                         <p>
                             <span th:text="${question.commentCount}+'回复'"></span>
