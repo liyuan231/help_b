@@ -18,8 +18,6 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
     @Resource(name = "questionDao")
     QuestionDao questionDao;
-    @Resource(name = "userDao")
-    UserDao userDao;
     @Resource(name = "userServiceImpl")
     UserService userService;
     @Override
@@ -28,8 +26,33 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> getQuestions(Integer number) {
-        List<Question> questions=questionDao.getQuestions(number);
+    public List<QuestionDto> getQuestions(Integer page,Integer size) {
+        List<Question> questions=questionDao.getQuestions((page-1)*size,size);
+        List<QuestionDto> questionDtos=new ArrayList<>();
+        for(Question question:questions){
+//            System.out.println((int)question.getAuthor());
+            BasicUser basicUser= userService.selectGitHubUserById((int) question.getAuthor());
+            QuestionDto questionDto = new QuestionDto();
+            BeanUtils.copyProperties(question,questionDto);
+            questionDto.setBasicUser(basicUser);
+            questionDtos.add(questionDto);
+        }
+        return questionDtos;
+    }
+
+    @Override
+    public Integer sum() {
+        return questionDao.sum();
+    }
+
+    @Override
+    public Integer sum(String userId) {
+        return questionDao.personalQuestionsSum(userId);
+    }
+
+    @Override
+    public List<QuestionDto> getPersonalQuestions(int page, Integer size, String userId) {
+        List<Question> questions=questionDao.getPersonalQuestions((page-1)*size,size,userId);
         List<QuestionDto> questionDtos=new ArrayList<>();
         for(Question question:questions){
 //            System.out.println((int)question.getAuthor());

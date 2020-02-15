@@ -12,6 +12,20 @@ public class Question {
     private long readCount;
     private long praiseCount;
 
+    public Question() {
+    }
+
+    public Question(String title, String detail, String tags, String createdAt, String modifiedAt, long author, long commentCount, long readCount, long praiseCount) {
+        this.title = title;
+        this.detail = detail;
+        this.tags = tags;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+        this.author = author;
+        this.commentCount = commentCount;
+        this.readCount = readCount;
+        this.praiseCount = praiseCount;
+    }
 
     public long getId() {
         return id;
