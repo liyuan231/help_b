@@ -1,7 +1,6 @@
 package com.example.help_b.service.impl;
 
 import com.example.help_b.dao.QuestionDao;
-import com.example.help_b.dao.UserDao;
 import com.example.help_b.model.BasicUser;
 import com.example.help_b.model.Question;
 import com.example.help_b.model.QuestionDto;
@@ -26,8 +25,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> getQuestions(Integer page,Integer size) {
-        List<Question> questions=questionDao.getQuestions((page-1)*size,size);
+    public List<QuestionDto> selectQuestions(Integer page, Integer size) {
+        List<Question> questions=questionDao.selectQuestions((page-1)*size,size);
         List<QuestionDto> questionDtos=new ArrayList<>();
         for(Question question:questions){
 //            System.out.println((int)question.getAuthor());
@@ -51,8 +50,8 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> getPersonalQuestions(int page, Integer size, String userId) {
-        List<Question> questions=questionDao.getPersonalQuestions((page-1)*size,size,userId);
+    public List<QuestionDto> selectPersonalQuestions(int page, Integer size, String userId) {
+        List<Question> questions=questionDao.selectPersonalQuestions((page-1)*size,size,userId);
         List<QuestionDto> questionDtos=new ArrayList<>();
         for(Question question:questions){
 //            System.out.println((int)question.getAuthor());
@@ -66,11 +65,16 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuestionDto getQuestionById(Integer questionId) {
-        Question question = questionDao.getQuestionById(questionId);
+    public QuestionDto selectQuestionById(Integer questionId) {
+        Question question = questionDao.selectQuestionById(questionId);
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question,questionDto);
         questionDto.setBasicUser(userService.selectGitHubUserById((int) questionDto.getAuthor()));
         return questionDto;
+    }
+
+    @Override
+    public void updateQuestion(Question question) {
+        questionDao.updateQuestion(question);
     }
 }

@@ -4,7 +4,9 @@ import com.example.help_b.model.Question;
 import com.example.help_b.service.QuestionService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -26,4 +28,7 @@ class HelpBApplicationTests {
         }
     }
 
+
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 }

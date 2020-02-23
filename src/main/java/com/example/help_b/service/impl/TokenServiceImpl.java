@@ -3,7 +3,6 @@ package com.example.help_b.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.help_b.model.BasicUser;
-import com.example.help_b.model.SysUser;
 import com.example.help_b.service.TokenService;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,7 @@
 package com.example.help_b.service.impl;
 
 import com.example.help_b.dao.UserDao;
+import com.example.help_b.model.BasicUser;
 import com.example.help_b.model.GitHubUser;
 import com.example.help_b.model.SysUser;
 import com.example.help_b.service.UserService;
@@ -14,14 +15,24 @@ public class UserServiceImpl implements UserService {
     UserDao userDao;
 
     @Override
-    public void insertSysUser(SysUser sysUser) {
-        userDao.insertSysUser(sysUser);
+    public void insertOrUpdateSysUser(SysUser sysUser) {
+        List<SysUser> users=userDao.selectSysUserById(sysUser.getId());
+        if(users.size()==0){
+            userDao.insertSysUser(sysUser);
+        }else{
+            userDao.updateSysUser(sysUser);
+        }
+
     }
 
     @Override
-    public void insertGitHubUser(GitHubUser githubUser) {
-
-        userDao.insertGitHubUser(githubUser);
+    public void insertOrUpdateGitHubUser(GitHubUser githubUser) {
+        List<GitHubUser> users=userDao.selectGitHubUserById(githubUser.getId());
+        if(users.size()==0){
+            userDao.insertGitHubUser(githubUser);
+        }else{
+            userDao.updateGitHubUser(githubUser);
+        }
     }
 
     @Override

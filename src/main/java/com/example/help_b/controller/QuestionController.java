@@ -1,6 +1,5 @@
 package com.example.help_b.controller;
 
-import com.example.help_b.dao.QuestionDao;
 import com.example.help_b.model.QuestionDto;
 import com.example.help_b.service.QuestionService;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,7 @@ public class QuestionController {
     @GetMapping("/question/{id}")
     public String question(@PathVariable("id")Integer questionId,
                            Model model){
-        QuestionDto questionDto = questionService.getQuestionById(questionId);
+        QuestionDto questionDto = questionService.selectQuestionById(questionId);
         model.addAttribute("question",questionDto);
         return "question";
     }
