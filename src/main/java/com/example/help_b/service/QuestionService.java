@@ -20,4 +20,6 @@ public interface QuestionService {
     QuestionDto selectQuestionById(Integer questionId);
 
     void updateQuestion(Question question);
+
+    void updateReadCount(Integer questionId);
 }

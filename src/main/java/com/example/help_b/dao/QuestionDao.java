@@ -30,6 +30,6 @@ public interface QuestionDao {
     @Select("select * from question where id=#{id}")
     Question selectQuestionById(@Param("id") Integer questionId);
 
-    @Update("update question set title = #{title},detail=#{detail},tags = #{tags},modifiedAt = #{modifiedAt} where id = #{id}")
+    @Update("update question set title = #{title},detail=#{detail},tags = #{tags},modifiedAt = #{modifiedAt},createdAt=#{createdAt},author = #{author},commentCount = #{commentCount},readCount = #{readCount},praiseCount = #{praiseCount} where id = #{id}")
     void updateQuestion(Question question);
 }

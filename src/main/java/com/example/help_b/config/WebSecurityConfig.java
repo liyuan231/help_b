@@ -63,8 +63,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and().authorizeRequests().antMatchers("/publish","/personal/**","/publish/**").hasAuthority("ROLE_USER")
+//                .and().authorizeRequests().antMatchers("/","/page/**","/login","/register","/logout","/question/**","/callback").permitAll()
                 .and().authorizeRequests().antMatchers("/publish","/personal/**","/publish/**").hasAuthority("ROLE_USER")
-                .and().authorizeRequests().antMatchers("/","/page/**","/login","/register","/logout","/question/**","/callback").permitAll()
+                .and().authorizeRequests().antMatchers("/**").permitAll()
 
                 .anyRequest().authenticated();
         http.headers().cacheControl();

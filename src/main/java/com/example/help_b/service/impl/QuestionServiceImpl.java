@@ -1,5 +1,7 @@
 package com.example.help_b.service.impl;
 
+import com.example.help_b.component.exception.ErrorExceptionCode;
+import com.example.help_b.component.exception.QuestionException;
 import com.example.help_b.dao.QuestionDao;
 import com.example.help_b.model.BasicUser;
 import com.example.help_b.model.Question;
@@ -67,6 +69,9 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDto selectQuestionById(Integer questionId) {
         Question question = questionDao.selectQuestionById(questionId);
+        if (question==null){
+            throw new QuestionException(ErrorExceptionCode.QUESTION_NOT_FOUND);
+        }
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question,questionDto);
         questionDto.setBasicUser(userService.selectGitHubUserById((int) questionDto.getAuthor()));
@@ -75,6 +80,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void updateQuestion(Question question) {
+        questionDao.updateQuestion(question);
+    }
+
+    @Override
+    public void updateReadCount(Integer questionId) {
+        Question question = questionDao.selectQuestionById(questionId);
+        question.setReadCount(question.getReadCount()+1);
         questionDao.updateQuestion(question);
     }
 }
