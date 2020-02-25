@@ -18,6 +18,7 @@
                 <div class="media" th:each="question :${questions}">
                     <div class="media-left">
                         <a href="#">
+<!--                            <p th:text="${question.basicUser.avatar_url}"></p>-->
                             <img th:src="${question.basicUser.avatar_url}" style="width: 64px" class="media-object img-circle" src="http://img3.imgtn.bdimg.com/it/u=1744365556,1648558001&fm=26&gp=0.jpg" alt="...">
                         </a>
                     </div>

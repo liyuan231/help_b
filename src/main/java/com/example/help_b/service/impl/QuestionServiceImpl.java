@@ -1,7 +1,7 @@
 package com.example.help_b.service.impl;
 
-import com.example.help_b.component.exception.ErrorExceptionCode;
-import com.example.help_b.component.exception.QuestionException;
+import com.example.help_b.component.Enum.GeneralEnum;
+import com.example.help_b.component.exception.MyException;
 import com.example.help_b.dao.QuestionDao;
 import com.example.help_b.model.BasicUser;
 import com.example.help_b.model.Question;
@@ -10,12 +10,14 @@ import com.example.help_b.service.QuestionService;
 import com.example.help_b.service.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class QuestionServiceImpl implements QuestionService {
     @Resource(name = "questionDao")
     QuestionDao questionDao;
@@ -33,6 +35,9 @@ public class QuestionServiceImpl implements QuestionService {
         for(Question question:questions){
 //            System.out.println((int)question.getAuthor());
             BasicUser basicUser= userService.selectGitHubUserById((int) question.getAuthor());
+            if(basicUser==null){
+                basicUser = userService.selectSysUserById((int) question.getAuthor());
+            }
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question,questionDto);
             questionDto.setBasicUser(basicUser);
@@ -58,6 +63,9 @@ public class QuestionServiceImpl implements QuestionService {
         for(Question question:questions){
 //            System.out.println((int)question.getAuthor());
             BasicUser basicUser= userService.selectGitHubUserById((int) question.getAuthor());
+            if(basicUser==null){
+                basicUser = userService.selectSysUserById((int) question.getAuthor());
+            }
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question,questionDto);
             questionDto.setBasicUser(basicUser);
@@ -70,11 +78,16 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionDto selectQuestionById(Integer questionId) {
         Question question = questionDao.selectQuestionById(questionId);
         if (question==null){
-            throw new QuestionException(ErrorExceptionCode.QUESTION_NOT_FOUND);
+            throw new MyException(GeneralEnum.QUESTION_NOT_FOUND);
         }
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question,questionDto);
-        questionDto.setBasicUser(userService.selectGitHubUserById((int) questionDto.getAuthor()));
+        BasicUser basicUser=userService.selectGitHubUserById((int) questionDto.getAuthor());
+        if(basicUser!=null){
+            questionDto.setBasicUser(basicUser);
+        }else {
+            questionDto.setBasicUser(userService.selectSysUserById((int) questionDto.getAuthor()));
+        }
         return questionDto;
     }
 

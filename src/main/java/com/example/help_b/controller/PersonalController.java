@@ -5,6 +5,7 @@ import com.example.help_b.model.Page;
 import com.example.help_b.model.QuestionDto;
 import com.example.help_b.service.PageService;
 import com.example.help_b.service.QuestionService;
+import com.example.help_b.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,8 @@ public class PersonalController {
     @Resource(name = "pageServiceImpl")
     PageService pageService;
 
+    @Resource(name = "userServiceImpl")
+    UserService userService;
     @Resource(name = "questionServiceImpl")
     QuestionService questionService;
     @GetMapping("/personal/{action}")
@@ -56,7 +59,11 @@ public class PersonalController {
                                     HttpServletRequest request){
         model.addAttribute("action","questions");
         model.addAttribute("actionName","我的问题");
-        BasicUser user= (BasicUser) request.getSession().getAttribute("user");
+        BasicUser user=userService.selectSysUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (user==null){
+            user = userService.selectGitHubUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        }
+
         List<QuestionDto> questionDtos = questionService.selectPersonalQuestions(page,size,user.getId().toString());
         model.addAttribute("questions",questionDtos);
         Page pageInfo = pageService.wrestleWithPage(page,questionService.sum(user.getId().toString()),size);

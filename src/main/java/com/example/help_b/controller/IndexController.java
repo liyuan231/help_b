@@ -31,7 +31,7 @@ public class IndexController {
         model.addAttribute("questions",questions);
         Page pageInfo= pageService.wrestleWithPage(1,questionService.sum(),size);
         model.addAttribute("page",pageInfo);
-        SecurityContextHolder.getContext().getAuthentication();
+//        SecurityContextHolder.getContext().getAuthentication();
         return "index";
     }
     @GetMapping("/page/{page}")
