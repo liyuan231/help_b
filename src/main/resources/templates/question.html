@@ -12,6 +12,12 @@
             padding: 8px;
             color: #999999;
             font-size: 15px;
+            cursor: pointer;
+        }
+
+        .secondLevelCommentActive {
+            background-color: #499ef3;
+            color: #ffffff;
         }
 
         .glyphicon:hover {
@@ -66,10 +72,29 @@
                             Consequuntur, mollitia!</p>
                         <p>
                             <span class="glyphicon glyphicon-thumbs-up" th:text="${comment.getPraiseCount()}">0</span>
-                            <span class="glyphicon glyphicon-comment"></span>
-                            <span class="pull-right" th:text="${comment.getModifiedAt()}">1</span>
+                            <span class="glyphicon glyphicon-comment" th:data-id="${comment.id}"
+                                  onclick="collapseComment(this)"></span>
+                            <span class="pull-right" th:text="${comment.getModifiedAt()}">上次修改时间</span>
                         </p>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 collapse" th:id="${'comment-'+comment.id}">
+                            <!--                        二级评论-->
+                            <!--                            <p>二级评论</p>-->
+                            <div th:id="${'commentsToComment-'+comment.id}">
+                                <!--                            此处要js循环放入后台数据-->
+
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <input type="text" class="form-control" placeholder="评论一下"
+                                       th:id="${'reply-'+comment.id}">
+                                <button type="button" class="btn btn-success pull-right" style="margin:10px;"
+                                        onclick="fun2(this)" th:data-id="${comment.id}">评论
+                                </button>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
 
             </div>
@@ -126,22 +151,77 @@
         var questionId = $("#questionId").val();
         var commentContent = $('#commentContent').val();
         // var commentator = $('#commentator').val();
+        comment(questionId, commentContent, 1, "/comment");
+    }
+
+    function fun2(e) {
+        // debugger
+        var commentId = e.getAttribute("data-id");
+        var commentContent = $("#reply-" + commentId).val();
+        comment(commentId, commentContent, 2, "/comment");
+    }
+
+    function collapseComment(e) {
+        var id = e.getAttribute("data-id");
+        var target = "#comment-" + id;
+        if ($(target).hasClass("in")) {
+            $(target).removeClass("in");
+            e.classList.remove("secondLevelCommentActive");
+        } else {
+            $.getJSON(
+                "/comment/" + id,
+                function (data) {
+                   for(var i=0;i<data.data.length;i++){
+                       // debugger;
+                        var info ="<div class=\"media\">\n" +
+                            "  <div class=\"media-left\">\n" +
+                            "    <a href=\"#\">\n" +
+                            "      <img class=\"media-object\" " +
+                            "src= " +
+                                data.data[i].basicUser.avatar_url+
+                            " alt=\"...\">\n" +
+                            "    </a>\n" +
+                            "  </div>\n" +
+                            "  <div class=\"media-body\">\n" +
+                            "    <h4 class=\"media-heading\" style=\"font-size: 12px;\">" +
+                                data.data[i].basicUser.username+
+                            "   </h4>\n" +
+                                "<p>"+
+                                "<span>"+
+                                data.data[i].content +
+                                "</span>"+
+                                "<span class='pull-right'>"+ data.data[i].modifiedAt+"</span>"+
+                                "</p>"+
+                            " </div>\n" +
+                            "</div>";
+
+                        $("#commentsToComment-"+id).append(info);
+                       console.log(data.data[i]);
+                   }
+                }
+            );
+            $(target).addClass("in");
+            e.classList.add("secondLevelCommentActive");
+        }
+    }
+
+    function comment(id, commentContent, type, url) {
         $.ajax({
-            url: "/comment",
+            url: url,
             type: "POST",
             data: JSON.stringify({
-                "parentId": questionId,
+                "parentId": id,
                 "content": commentContent,
-                "type": 1,
+                "type": type,
                 // "commentator":commentator
             }),
             success: function (response) {
-                debugger
+                // debugger
                 console.log(response);
-                if(response.code ===200){
-                    debugger
+                if (response.code === 200) {
+                    // debugger
                     window.location.reload();
-                    scroll(0,0);
+                    scroll(0, 0);
                 }
             },
             error: function (request) {
@@ -155,3 +235,15 @@
     }
 </script>
 </html>
+<!--
+<div class="media">
+      <div class="media-left">
+        <a href="#">
+          <img class="media-object" data-src="holder.js/64x64" alt="64x64" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+PCEtLQpTb3VyY2UgVVJMOiBob2xkZXIuanMvNjR4NjQKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNzA4MTFjMzkwYSB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE3MDgxMWMzOTBhIj48cmVjdCB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSIxMy4xNzE4NzUiIHk9IjM2LjU2MDkzNzUiPjY0eDY0PC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="width: 64px; height: 64px;">
+        </a>
+      </div>
+      <div class="media-body">
+        <h4 class="media-heading">Media heading</h4>
+        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+      </div>
+    </div>-->

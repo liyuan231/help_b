@@ -1,5 +1,6 @@
 package com.example.help_b.controller;
 
+import com.example.help_b.component.Enum.GeneralEnum;
 import com.example.help_b.model.Comment;
 import com.example.help_b.model.QuestionDto;
 import com.example.help_b.service.CommentService;
@@ -24,7 +25,7 @@ public class QuestionController {
                            Model model){
         QuestionDto questionDto = questionService.selectQuestionById(questionId);
         questionService.updateReadCount(questionId);
-        List<Comment> comments = commentService.selectCommentsByQuestionId(questionId);
+        List<Comment> comments = commentService.selectCommentsById(questionId, GeneralEnum.QUESTION.getCode());
         model.addAttribute("question",questionDto);
         model.addAttribute("comments",comments);
         return "question";

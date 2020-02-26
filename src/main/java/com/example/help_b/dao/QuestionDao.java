@@ -34,6 +34,6 @@ public interface QuestionDao {
     @Update("update question set title = #{title},detail=#{detail},tags = #{tags},modifiedAt = #{modifiedAt},createdAt=#{createdAt},author = #{author},commentCount = #{commentCount},readCount = #{readCount},praiseCount = #{praiseCount} where id = #{id}")
     void updateQuestion(Question question);
 
-    @Select("select * from comment where parentId = #{questionId} and type = 1 order by modifiedAt desc")
-    List<Comment> selectCommentsByQuestionId(Integer questionId);
+    @Select("select * from comment where parentId = #{questionId} and type = #{type} order by modifiedAt desc")
+    List<Comment> selectCommentsById(Integer questionId,Integer type);
 }

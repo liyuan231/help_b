@@ -56,12 +56,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> selectCommentsByQuestionId(Integer questionId) {
-        List<Comment> comments = questionDao.selectCommentsByQuestionId(questionId);
+    public List<Comment> selectCommentsById(Integer id,Integer type) {
+        List<Comment> comments = questionDao.selectCommentsById(id,type);
         for(Comment comment:comments){
             comment.setBasicUser(userService.selectSysUserById(comment.getBasicUser().getId()));
         }
         return comments;
     }
+
 }
 

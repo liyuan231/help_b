@@ -7,13 +7,12 @@ import com.example.help_b.model.ResultJson;
 import com.example.help_b.service.CommentService;
 import com.example.help_b.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class CommentController {
@@ -34,6 +33,12 @@ public class CommentController {
         comment.setModifiedAt(comment.getCreatedAt());
         comment.setPraiseCount(0);
         commentService.insertComment(comment);
-        return new ResultJson(200,"success");
+        return new ResultJson(200,"success",null);
+    }
+    @GetMapping("/comment/{id}")
+    public ResultJson commentsToComment(@PathVariable("id")Integer id){
+        List<Comment> comments=commentService.selectCommentsById(id,GeneralEnum.COMMENT.getCode());
+
+        return new ResultJson(200,"success",comments);
     }
 }
